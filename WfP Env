@@ -1,0 +1,48 @@
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
+# Constants
+ROAD_WIDTH = 10  # Width of the road in meters
+ROAD_LENGTH = 50  # Length of the road in meters
+VEHICLE_LENGTH = 5  # Length of the vehicle in meters
+VEHICLE_WIDTH = 2  # Width of the vehicle in meters
+
+# Initial positions
+car_position = [5, ROAD_WIDTH / 2]  # Starting position of the car [x, y]
+pedestrian_position = [45, ROAD_WIDTH - 1]  # Starting position of the pedestrian
+
+# Plot setup
+fig, ax = plt.subplots(figsize=(12, 6))
+
+def plot_environment(car_pos, pedestrian_pos):
+    ax.clear()
+    
+    # Draw road
+    ax.fill_between([0, ROAD_LENGTH], 0, ROAD_WIDTH, color='#000000')  # Road color (Black)
+
+    # Draw zebra crossing
+    stripe_width = 0.5
+    for i in range(10):  # 10 stripes spanning the width of the road
+        stripe_start = 40 + i * stripe_width * 1.5
+        ax.add_patch(patches.Rectangle((stripe_start, 0), stripe_width, ROAD_WIDTH, color='white'))
+
+    # Draw car
+    car_rect = patches.FancyBboxPatch((car_pos[0] - VEHICLE_LENGTH / 2, car_pos[1] - VEHICLE_WIDTH / 2),
+                                      VEHICLE_LENGTH, VEHICLE_WIDTH,
+                                      boxstyle="round,pad=0.1", edgecolor='black', facecolor='green')
+    ax.add_patch(car_rect)
+    ax.text(car_pos[0], car_pos[1], 'Vehicle', ha='center', va='center', color='white', fontsize=8, weight='bold')
+
+    # Draw pedestrian
+    pedestrian_circle = plt.Circle(pedestrian_pos, 0.5, color='red', ec='black', linewidth=2)
+    ax.add_patch(pedestrian_circle)
+    ax.text(pedestrian_pos[0], pedestrian_pos[1] - 1, 'Pedestrian', ha='center', va='center', color='black', fontsize=8)
+
+    # Plot settings
+    ax.set_xlim(0, ROAD_LENGTH)
+    ax.set_ylim(-2, ROAD_WIDTH + 2)
+    ax.axis('off')
+
+# Plot the environment
+plot_environment(car_position, pedestrian_position)
+plt.show()
