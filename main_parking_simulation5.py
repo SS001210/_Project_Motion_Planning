@@ -251,7 +251,7 @@ def generate_target_course(x, y):
 
     return tx, ty, tyaw, tk, csp
 
-def generate_s_trajectory(x0, y0, parkx, parky, parking_spot_length, parking_spot_breath, offset=25, m0=0, mf=0, k0=0, kf=0, num_points=15):
+def generate_s_trajectory(x0, y0, parkx, parky, parking_spot_length, parking_spot_breath, offset=15, m0=0, mf=0.0, k0=0, kf=0, num_points=15):
     """
     Generate an S-shaped trajectory between two points.
     
@@ -270,7 +270,7 @@ def generate_s_trajectory(x0, y0, parkx, parky, parking_spot_length, parking_spo
     # Construct the system of equations to solve for polynomial coefficients
     x0 = parkx - offset 
     y0 = 0
-    xf = parkx + 0.1
+    xf = parkx + 0.8
     yf = parky
     A = np.array([
         [x0**5, x0**4, x0**3, x0**2, x0, 1],
@@ -298,7 +298,7 @@ def main():
     wy = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
     tx, ty, tyaw, tc, csp = generate_target_course(wx, wy) 
     # Initial state for forward motion
-    c_speed = 30.0 / 3.6  # Current speed [m/s]
+    c_speed = TARGET_SPEED  # Current speed [m/s]
     c_accel = 0.0  # Current acceleration [m/s^2]
     c_d = 0.0  # Current lateral position [m]
     c_d_d = 0.0  # Current lateral speed [m/s]
@@ -309,7 +309,7 @@ def main():
     
     # Initial state for forward parking
     f_speed = c_speed  # Parking speed [m/s]
-    f_accel = -0.7  # Parking acceleration [m/s^2]
+    f_accel = -2.6  # Parking acceleration [m/s^2]
     f_d = 0.0  # Parking lateral position [m]
     f_d_d = 0.0  # Parking lateral speed [m/s]
     f_d_dd = 0.0  # Parking lateral acceleration [m/s^2]
@@ -328,7 +328,7 @@ def main():
             c_accel = path.s_dd[1]
 
             ego_x = path.x[1]  # Current x position of the vehicle
-            if state == 'motion' and (parkx - ego_x <= 25):
+            if state == 'motion' and (parkx - ego_x <= 15):
                 print("Parking slot detected!")
                 state = "forward"  # Fixed typo
                 fx, fy = csp.calc_position(path.s[-1])
